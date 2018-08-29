@@ -15,7 +15,7 @@ data Command
   = Quit
   | DisplayItems
   | AddItem String
-  | Done Int
+  | Delete Int
   | Help
 
 parseCommand :: String -> Either String Command
@@ -26,7 +26,7 @@ parseCommand line = case words line of
   "add" : "-" : item -> Right (AddItem (unwords item))
   ["delete", idxStr] ->
     if all (\c -> elem c "0123456789") idxStr
-      then Right (Done (read idxStr))
+      then Right (Delete (read idxStr))
       else Left "Invalid index."
   _ -> Left "Unknown command."
 
@@ -52,7 +52,7 @@ interactWithUser items = do
       putStrLn "Bye!"
       pure ()
 
-    Right (Done index) -> do
+    Right (Delete index) -> do
       let result = removeItem index items
       case result of
         Left errMsg -> do
