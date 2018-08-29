@@ -1,4 +1,4 @@
-module Todo where
+--module Todo where
 
 main :: IO ()
 main = do
@@ -24,7 +24,7 @@ parseCommand line = case words line of
   ["items"] -> Right DisplayItems
   ["help"] -> Right Help
   "add" : "-" : item -> Right (AddItem (unwords item))
-  ["done", idxStr] ->
+  ["delete", idxStr] ->
     if all (\c -> elem c "0123456789") idxStr
       then Right (Done (read idxStr))
       else Left "Invalid index."
@@ -35,7 +35,7 @@ interactWithUser items = do
   line <- getLine
   case parseCommand line of
     Right Help -> do
-      putStrLn "Commands: help, quit, items, add - <item to add>, done <item index>"
+      putStrLn "Commands: help, quit, items, add - <item to add>, delete <item index>"
       interactWithUser items
 
     Right DisplayItems -> do
@@ -59,7 +59,7 @@ interactWithUser items = do
           putStrLn ("Error: " ++ errMsg)
           interactWithUser items
         Right newItems -> do
-          putStrLn "Item done."
+          putStrLn "Item delete."
           interactWithUser newItems
 
     Left errMsg -> do
